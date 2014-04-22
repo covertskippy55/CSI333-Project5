@@ -1,0 +1,103 @@
+#Name: Dilan Samarasinghe
+#ID: DS697678
+#Lab: Fri 11:30
+
+
+        .data					  
+
+instr:  .asciiz "Please enter an integer: "      #The prompt
+ones:	.asciiz "Number of leading ones are: "	 #The output for negative numbers
+zeroes:	.asciiz	"Number of leading zeroes are: " #The output for positive numbers
+nline:  .asciiz "\n"				 #New line character
+        .text
+        .globl main
+
+main:	li	$11,-1				#11 has -1 for later checking
+	move	$10,$0				#$10 will be used to count leading numbers
+	
+
+	la      $a0,instr			#load input sting to $a0 		
+        li      $v0,4				#load 4 to print string
+	syscall
+
+	
+	li	$v0,5				#load 5 to read int
+        syscall					#syscall v0 has input int
+
+
+	move	$12,$v0				#move the int to 12	
+	beqz	$12,zero			#check if input is zero  if so jump to label zero
+
+	beq	$12,$11,negone			#check if input is a negative one if so jump to negone
+
+	bgtz	$12,pos				#check if the int is greater than zero if so jump to pos
+	bltz	$12,nega			#check if the int is less than zero if so jump to nega
+
+
+zero:	la	$a0,zeroes			#load the output for positive numbers
+	li	$v0,4
+	syscall
+	li	$a0,32				#the leading zeroes for the number zero is 32
+	li	$v0,1				#command to print an int
+	syscall
+	la	$a0,nline			#print newline character
+	li	$v0,4
+	syscall
+	li	$v0,10
+	syscall					#end program
+
+
+negone: la	$a0,ones			#load the output string for negative number
+	li	$v0,4
+	syscall
+	li	$a0,32				#the leading ones for the number negative one is 32
+	li      $v0,1                           #command to print an int
+        syscall
+        la      $a0,nline                       #print newline character
+        li      $v0,4
+        syscall
+        li      $v0,10
+        syscall
+
+
+pos:	andi	$13,$12,0x80000000		#gets the first bit of the int and stores in 13
+	bne	$13,$0,endp			#check if 13 is not zero if so jump to end sequence for positive numbers
+	addi	$10,$10,1			#otherwise add 1 to count
+	sll	$12,$12,1			#shift the number by one bit to the left
+	b	pos				#and jump back to pos loop
+	
+endp:   la      $a0,zeroes                      #load the output for positive numbers
+       	li      $v0,4
+       	syscall
+        move	$a0,$10                         #move the count value to a0 for syscall
+        li      $v0,1                           #command to print an int
+        syscall
+        la      $a0,nline                       #print newline character
+        li      $v0,4
+        syscall
+        li      $v0,10
+        syscall
+
+ 
+nega:   andi    $13,$12,0x80000000              #gets the first bit of the int and stores in 13
+        beq	$13,$0,endn	                #check if 13 is zero if so jump to the end sequence for negative numbers
+        addi    $10,$10,1                       #otherwise add 1 to count
+        sll     $12,$12,1                       #shift the number by one bit to the left
+        b       nega                            #and jump back to nega loop
+
+
+
+endn:   la      $a0,ones                    	#load the output for negative numbers
+        li      $v0,4
+        syscall
+        move    $a0,$10                         #move the count value to a0 for syscall
+        li      $v0,1                           #command to print an int
+        syscall
+        la      $a0,nline                       #print newline character
+        li      $v0,4
+        syscall
+        li      $v0,10
+        syscall
+
+
+

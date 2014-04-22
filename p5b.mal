@@ -1,0 +1,127 @@
+#Name: Dilan Samarasinghe
+#ID: DS697678
+#Lab:Fri 11:30
+
+		.data
+
+input:          .asciiz		"Enter string: "	#print string for getting string
+pinput:         .asciiz		"Enter patter: "	#print string for getting pattern
+nline:          .asciiz		"\n"			#new line character
+nmatch:		.asciiz		"No match was found \n" #string for no match
+match:		.asciiz		"Match was found \n "	#a match was found string
+parmatch:	.asciiz		"Length of the partial match: "	#string to print for partial match
+indexstring:	.asciiz		"Starting index = "	#string to print before printing index of match
+string:		.byte		0:82			#char array for 81 chars+ '\0'
+pattern:	.byte		0:12			#char array for 11 chars+ '\0'	
+
+		.text
+		.globl main
+
+
+main:	la	$a0,input	#print the prompt for string
+	li	$v0,4
+	syscall
+	li	$v0,8		#get string and store in string array
+	la	$a0,string
+	li	$a1,82
+	syscall
+	la      $a0,pinput	#print the prompt for pattern
+        li      $v0,4
+        syscall
+        li      $v0,8		#store pattern in the pattern array
+        la      $a0,pattern
+        li      $a1,12
+        syscall
+
+	jal	pattern_match	#procedure call to pattern matching function
+	
+	li	$15,2		#load 2 to 15 for checking for partial matching
+	beqz	$12,nomatch	#if 12 has 0 then no match occured so jump to nomatch
+	beq	$15,$12,pmatch	#if 12 has 2 then a partial match occured so jump to pmatch
+	la	$a0,match	#otherwise a full match occured so load the string to print for match
+	li	$v0,4
+	syscall
+	la	$a0,indexstring	#print the index string
+	li	$v0,4
+	syscall
+	move	$a0,$14		#move the value in 14(the counter) to a0 and print it
+	li	$v0,1
+	syscall
+	la	$a0,nline	#print newline
+	li	$v0,4
+	syscall
+	li	$v0,10		end program
+	syscall
+
+pmatch:	la	$a0,nmatch	#print the no match string
+	li	$v0,4
+	syscall
+	la	$a0,parmatch	#print the partial match length string
+	li	$v0,4
+	syscall
+	move	$a0,$16		#print the value in 16 which is the length of the match
+	li	$v0,1
+	syscall
+	la	$a0,nline	#print new line
+	li	$v0,4
+	syscall
+	la	$a0,indexstring
+	li	$v0,4
+	syscall
+	move	$a0,$14		#print the address
+	li	$v0,1
+	syscall
+	la	$a0,nline
+	li	$v0,4
+	syscall
+	li	$v0,10		#end program
+	syscall
+	
+
+nomatch:la	$a0,nmatch	#print the no match string
+	li	$v0,4	
+	syscall
+	li	$v0,10		#end program
+	syscall
+
+
+pattern_match:
+	move	$14,$0		#14  holds the index
+	li	$13,'\n'	#13 has newline char to check for end of arrays
+	la	$8,string	#8 has the string
+	la	$9,pattern	#9 has the pattern
+	move	$12,$0		#holds flag for various conditions
+	move	$16,$0		#length counter
+	
+while:	lbu     $10,0($8)       #10 has the first byte(first char) from string
+        lbu     $11,0($9)       #11 has the first byte(first char) from the pattern
+	beq	$10,$13,endp	#check to see if the string reached the end
+	beq	$11,$13,reset	#if the pattern string reaches end jump to reset
+	bne	$11,$10,missmatch	#if the two characters dont match jump to mismatch
+	beq	$10,$11,matched	#if the characters match jump to matched
+
+
+matched:
+		addi	$16,$16,1	#increment the length
+		addi	$8,$8,1		#increment the string address
+		addi	$9,$9,1		#increment the pattern address
+		li	$12,1		#set 12 to 1 meaning match so far
+		j	while		#back to the while loop
+
+missmatch:  	li	$15,1		#load 1 to 15 so we can check if there was a match before this point, this is used for partial match
+		beq	$12,$15,end2	#if 12 had 1, meaning up till now there was a match of atleast length 1, jump to end2
+		addi    $8,$8,1 	#otherwise increment the address of the string to get next character
+                addi    $14,$14,1       #increment the counter
+                b       while   	#go back to the while loop
+
+end2:	li	$12,2			#we load 2 into 12 to say there was a partial match(this gets checked in the main)
+	jr	$ra			#return to main
+	
+endp:	jr	$ra			#return to main without changing any flags
+	
+
+reset:	li	$15,1			#we load 1 to 15 to check in next instruction
+	beq	$12,$15,endp		#we check if there were any matches before this point if there is we end the function
+	la      $9,pattern		#if there was not we reload the address of pattern back into 9 to keep checking agasint string
+	j       while			#and jump back to the while loop
+

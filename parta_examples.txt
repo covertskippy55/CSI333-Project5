@@ -1,0 +1,50 @@
+       Sample Test Cases for Part (a) of Project V
+       -------------------------------------------
+
+Example 1:
+==========
+
+  Integer = 0
+  No. of leading zeros = 32
+
+Example 2:
+==========
+
+  Integer = 71
+  No. of leading zeros = 25
+
+Example 3:
+==========
+
+  Integer = 128
+  No. of leading zeros = 24
+
+Example 4:
+==========
+
+  Integer = 1342177279
+  No. of leading zeros = 1
+
+Example 5:
+==========
+
+  Integer = -1
+  No. of leading Ones = 32
+ 
+Example 6:
+==========
+
+  Integer = -4
+  No. of leading Ones = 30
+
+Example 7:
+==========
+
+  Integer = -23
+  No. of leading Ones = 27
+
+Example 8:
+==========
+
+  Integer = -1073741824
+  No. of leading Ones = 2

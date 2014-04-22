@@ -1,0 +1,70 @@
+       Sample Test Cases for Part (b) of Project V
+       -------------------------------------------
+
+Example 1:
+==========
+
+  Text string   :  Consider the left side
+  Pattern string:  side
+
+  Output to be produced:
+  ----------------------
+     Yes, there is a match.
+     Starting index = 3
+
+Example 2:
+==========
+
+  Text string   :  Consider the left side
+  Pattern string:  sides
+
+  Output to be produced:
+  ----------------------
+     No, there is no match.
+     Length of longest partial match = 4
+     Starting index = 3
+
+Example 3:
+==========
+
+  Text string   :  Consider the left side
+  Pattern string:  xide
+
+  Output to be produced:
+  ----------------------
+     No, there is no match.
+
+Example 4:
+==========
+
+  Text string   :  xyabcdabcpq
+  Pattern string:  abc
+
+  Output to be produced:
+  ----------------------
+     Yes, there is a match.
+     Starting index = 2
+
+Example 5:
+==========
+
+  Text string   :  xyabcdabcpq
+  Pattern string:  abcx
+
+  Output to be produced:
+  ----------------------
+     No, there is no match.
+     Length of longest partial match = 3
+     Starting index = 2
+
+Example 6:
+==========
+
+  Text string   :  xyabcdabcpq
+  Pattern string:  qabc
+
+  Output to be produced:
+  ----------------------
+     No, there is no match.
+     Length of longest partial match = 1
+     Starting index = 10
